@@ -1,14 +1,14 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
-#include "GP2Y0A02YK0F.h"
+//#include "GP2Y0A02YK0F.h"
 
 #define analogPin A0 /* ESP8266 Analog Pin ADC0 = A0 */
 
 int adcValue = 0;  /* Variable to store Output of ADC */
 
-const char* ssid = /*<Insert SSID>*/;
-const char* password = /*<Insert Password>*/;
+const char* ssid = "nyp";
+const char* password = "nyp";
 
 
 //Your Domain name with URL path or IP address with path
@@ -24,7 +24,7 @@ unsigned long lastTime = 0;
 // Set timer to 5 seconds (5000)
 unsigned long timerDelay = 50000;
 
-GP2Y0A02YK0F irSensor;
+//GP2Y0A02YK0F irSensor;
 int cm;
 uint8_t LED_Pin = D4;
 
