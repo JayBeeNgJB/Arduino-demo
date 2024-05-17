@@ -4,17 +4,22 @@
 //#include "GP2Y0A02YK0F.h"
 
 #define analogPin A0 /* ESP8266 Analog Pin ADC0 = A0 */
-
+#define externalLED D3 //0 is turn on
 int adcValue = 0;  /* Variable to store Output of ADC */
 
-const char* ssid = "nyp";
-const char* password = "nyp";
+#define TIME_DELAY 1000
+#define ENCRYPTION false
+
+const char* ssid = "JBCAT";
+const char* password = "catcatcat";
 
 
 //Your Domain name with URL path or IP address with path
-String serverName = "<>"; //Your API Address
+String serverName = "http://192.168.137.1/iot"; //Your API Address
+
+
 // String serverName = "http://192.168.137.1:5000/beep-r";
-String deviceName = "<>"; //Your Device name
+String deviceName = "demo1"; //Your Device name
 
 // the following variables are unsigned longs because the time, measured in
 // milliseconds, will quickly become a bigger number than can be stored in an int.
@@ -31,6 +36,7 @@ uint8_t LED_Pin = D4;
 void setup() {
   // irSensor.begin(A0);	//	Assign A0 as sensor   pin
   pinMode(LED_Pin, OUTPUT);   // Initialize the LED pin as an output
+  pinMode(externalLED, OUTPUT);   // Initialize the LED pin as an output
   Serial.begin(115200); 
 
   WiFi.begin(ssid, password);
@@ -47,49 +53,54 @@ void setup() {
   Serial.print("Connected to WiFi network with IP Address: ");
   digitalWrite(LED_Pin, HIGH);// Turn the LED off
   Serial.println(WiFi.localIP());
- 
   Serial.println("Timer set to 5 seconds (timerDelay variable), it will take 5 seconds before publishing the first reading.");
 }
 
 void loop() {
-  // cm = irSensor.getDistanceCentimeter();
-  // Serial.print("cm = ");
-  // Serial.println(cm);
   digitalWrite(LED_Pin, HIGH);// Turn the LED off
-  adcValue = 0;
-  adcValue = analogRead(analogPin); /* Read the Analog Input value 180 is about 125cm */
-  Serial.print("ADC Value = ");
-  Serial.println(adcValue);
 
-  delay(50);
+  // Do the data collection here
+  adcValue = 0;
+  adcValue = analogRead(analogPin); 
+
+  if(ENCRYPTION == true){
+    //do the encryption here
+    
+  }
+
+  delay(TIME_DELAY);
   // Send an HTTP POST request depending on timerDelay
-  // if ((millis() - lastTime) > timerDelay) {
-  // Send an HTTP GET request if ADC is above 200 value
-  if (adcValue > 200){ //180
-    Serial.print("ADC Value = ");
-    Serial.println(adcValue);
+  if (true){
     digitalWrite(LED_Pin, LOW); // Turn the LED on
     //Check WiFi connection status
     if(WiFi.status()== WL_CONNECTED){
       WiFiClient client;
       HTTPClient http;
-
       String serverPath = serverName+"?device="+deviceName+"&adc="+adcValue;
       
       // Your Domain name with URL path or IP address with path
       http.begin(client, serverPath.c_str());
-  
       // If you need Node-RED/server authentication, insert user and password below
       //http.setAuthorization("REPLACE_WITH_SERVER_USERNAME", "REPLACE_WITH_SERVER_PASSWORD");
-        
       // Send HTTP GET request
       int httpResponseCode = http.GET();
-      
       if (httpResponseCode>0) {
         Serial.print("HTTP Response code: ");
         Serial.println(httpResponseCode);
         String payload = http.getString();
         Serial.println(payload);
+        if(ENCRYPTION == true){
+          //do the decryption here
+          
+        }
+        if(payload == "[1]"){
+          Serial.println("on led");
+          digitalWrite(externalLED, LOW);
+        }
+        else{
+          Serial.println("off LED");
+          digitalWrite(externalLED, HIGH);
+        }
       }
       else {
         Serial.print("Error code: ");
