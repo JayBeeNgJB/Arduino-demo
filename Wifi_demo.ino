@@ -10,8 +10,8 @@ int adcValue = 0;  /* Variable to store Output of ADC */
 #define TIME_DELAY 1000
 #define ENCRYPTION false
 
-const char* ssid = "JBCAT";
-const char* password = "catcatcat";
+const char* ssid = <SSID>;
+const char* password = <SSID_Password>;
 
 
 //Your Domain name with URL path or IP address with path
